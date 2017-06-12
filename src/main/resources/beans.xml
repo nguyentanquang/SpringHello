@@ -5,6 +5,6 @@
 
     <bean id="helloWorld1" class="test.HelloWorld"></bean>
     <bean id="helloWorld2" class="test.HelloWorld">
-        <property name="name" value="Quang"/>
+        <property name="name" value="Nguyen Tan Quang"/>
     </bean>
 </beans>
