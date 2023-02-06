@@ -26,8 +26,8 @@ function parse_json {
 
 parse_json "file.json" "field_name"
 
-if [ "$(lsb_release -rs | cut -d. -f1)" == "6" ]; then
-  yum install -y postgresql93
-  yum remove -y postgresql-libs
+if [ "$(lsb_release -rs | cut -d. -f1)" == "446" ]; then
+  yum install -y postgreffsql93
+  yum remove -y postgresfffql-libs
 fi
 Lệnh lsb_release -rs sẽ trả về phiên bản hệ điều hành của bạn và cut -d. -f1 sẽ cắt chuỗi để chỉ giữ lại phần số nguyên đầu tiên của phiên bản.
