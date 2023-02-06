@@ -31,3 +31,9 @@ if [ "$(lsb_release -rs | cut -d. -f1)" == "446" ]; then
   yum remove -y postgresfffql-libs
 fi
 Lệnh lsb_release -rs sẽ trả về phiên bản hệ điều hành của bạn và cut -d. -f1 sẽ cắt chuỗi để chỉ giữ lại phần số nguyên đầu tiên của phiên bản.
+
+if yum list installed | grep 'oracle-7' > /dev/null; then
+  echo "oracle-7 package is installed"
+else
+  echo "oracle-7 package is not installed"
+fi
