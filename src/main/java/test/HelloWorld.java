@@ -1,5 +1,12 @@
 #!/bin/bash
+#!/bin/bash
 
+function parse_json {
+  local json_file=$1
+  local field_name=$2
+  local value=$(grep -oE "\"$field_name\":\"[^\"]+\"" $json_file | awk -F":" '{print $2}' | tr -d '"')
+  echo "Value of $field_name is: $value"
+}
 # Hàm để lấy giá trị item cấp sâu trong JSON
 get_json_value() {
   local json=$1
