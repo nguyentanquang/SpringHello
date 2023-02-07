@@ -1,3 +1,17 @@
+import json
+
+def get_item_value(json_file, item_path):
+    with open(json_file) as f:
+        data = json.load(f)
+        item_path_list = item_path.split(".")
+        for item in item_path_list:
+            data = data.get(item, {})
+        return data
+
+print(get_item_value("file.json", "a.b.c")) # Output: value1
+print(get_item_value("file.json", "e.b.d")) # Output: v
+
+
 #!/bin/bash
 #!/bin/bash
 import json
