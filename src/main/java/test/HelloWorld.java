@@ -1,3 +1,4 @@
+import sys
 import json
 
 def get_item_value(json_file, item_path):
@@ -8,8 +9,10 @@ def get_item_value(json_file, item_path):
             data = data.get(item, {})
         return data
 
-print(get_item_value("file.json", "a.b.c")) # Output: value1
-print(get_item_value("file.json", "e.b.d")) # Output: v
+json_file = sys.argv[1]
+item_path = sys.argv[2]
+result = get_item_value(json_file, item_path)
+print(result)
 
 
 #!/bin/bash
