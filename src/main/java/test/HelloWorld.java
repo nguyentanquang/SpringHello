@@ -1,5 +1,35 @@
 #!/bin/bash
 
+# Hàm để lấy giá trị item cấp sâu trong JSON
+get_json_value() {
+  local json=$1
+  local item=$2
+  local IFS='.'
+  local -a keys=($item)
+  local value=''
+  
+  for key in "${keys[@]}"; do
+    if [[ $json =~ \"$key\":\"(.*?)\", ]]; then
+      value=${BASH_REMATCH[1]}
+      json=${json#*\"$key\":\"$value\",}
+    elif [[ $json =~ \"$key\":(.*?), ]]; then
+      value=${BASH_REMATCH[1]}
+      json=${json#*\"$key\":$value,}
+    fi
+  done
+  
+  echo "$value"
+}
+
+# Sử dụng hàm
+json='{"a": {"b": {"c": "value"}}}'
+item="a.b.c"
+value=$(get_json_value "$json" "$item")
+
+echo "Giá trị của item 
+
+#!/bin/bash
+
 # Function to find a value of an item in the config file
 function find() {
   local item=$1
