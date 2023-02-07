@@ -1,6 +1,11 @@
 #!/bin/bash
 #!/bin/bash
+import json
 
+def get_json_value(file_path, field_name):
+    with open(file_path) as f:
+        data = json.load(f)
+        return data.get(field_name)
 function parse_json {
   local json_file=$1
   local field_name=$2
