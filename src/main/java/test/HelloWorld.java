@@ -1,3 +1,12 @@
+<VirtualHost *:443>
+  ServerName $host_name
+  SSLEngine on
+  SSLCertificateFile "$ssl_name"
+  SSLCertificateKeyFile "$ssl_key"
+  ProxyPass /path ajp://localhost:2342
+  ProxyPass /path1 ajp://localhost:8123
+</VirtualHost>
+
 import sys
 import json
 
