@@ -1,3 +1,13 @@
+old_word="word1"
+old_values=($old_word word2)
+new_values=(replacement1 replacement2)
+
+result=$(cat file.txt)
+for i in "${!old_values[@]}"; do
+    result=$(echo "$result" | sed "s/${old_values[i]}/${new_values[i]}/g")
+done
+echo "$result" > output.txt
+
 <VirtualHost *:443>
   ServerName $host_name
   SSLEngine on
