@@ -1,3 +1,25 @@
+# Lấy các tham số đầu vào
+path=${1:-.}
+group=${2:-.}
+owner=${3:-.}
+mode=${4:-.}
+
+# Kiểm tra xem path là folder hay file
+if [ -d "$path" ]; then
+  # Nếu là folder, tạo folder
+  mkdir -p $path
+else
+  # Nếu là file, lấy path chứa file và tạo folder
+  dir=$(dirname $path)
+  mkdir -p $dir
+  touch $path
+fi
+
+# Thiết lập group, owner, mode cho folder hoặc file
+[ "$group" != "." ] && chgrp $group $dir
+[ "$owner" != "." ] && chown $owner $dir
+[ "$mode" != "." ] && chmod $mode $dỉ
+
 old_word="word1"
 old_values=($old_word word2)
 new_values=(replacement1 replacement2)
