@@ -1,3 +1,94 @@
+import boto3
+import time
+
+elbv2 = boto3.client('elbv2')
+ec2 = boto3.client('ec2')
+ssm = boto3.client('ssm')
+
+def remove_instance_from_target_group(target_group_arn, instance_id):
+    elbv2.deregister_targets(
+        TargetGroupArn=target_group_arn,
+        Targets=[{
+            'Id': instance_id,
+        }],
+    )
+    
+    return True
+
+def restart_tomcat_service(instance_id, tomcat_service_name):
+    response = ssm.send_command(
+        InstanceIds=[instance_id],
+        DocumentName='AWS-RunShellScript',
+        Parameters={
+            'commands': [
+                f'sudo service {tomcat_service_name} restart'
+            ]
+        }
+    )
+    
+    command_id = response['Command']['CommandId']
+    
+    return command_id
+
+def add_instance_to_target_group(target_group_arn, instance_id):
+    elbv2.register_targets(
+        TargetGroupArn=target_group_arn,
+        Targets=[{
+            'Id': instance_id,
+        }],
+    )
+    
+    return True
+
+def lambda_handler(event, context):
+    target_group_arn = 'arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-target-group/abcdef1234567890'
+    instance_id = 'i-01234567890abcdef'
+    tomcat_service_name = 'tomcat8'
+    max_attempts = 30
+    drain_timeout_seconds = 300
+    
+    attempts = 0
+    
+    while True:
+        instance_state = get_instance_state(target_group_arn, instance_id)
+        
+        if instance_state == 'InService':
+            set_instance_health(target_group_arn, instance_id, 'Unhealthy')
+            
+            while attempts < max_attempts:
+                time.sleep(drain_timeout_seconds / max_attempts)
+                
+                if check_instance_requests(instance_id):
+                    break
+                else:
+                    attempts += 1
+            
+            if attempts == max_attempts:
+                return {
+                    'statusCode': 500,
+                    'body': 'Instance did not complete requests in time'
+                }
+            
+            restart_tomcat_service(instance_id, tomcat_service_name)
+            
+            new_instance_id = add_instance_to_target_group(target_group_arn)
+            
+            break
+        
+        elif instance_state == 'Initial':
+            time.sleep(5)
+            continue
+        
+        else:
+            return {
+                'statusCode': 500,
+                'body': f'Instance in unexpected state: {instance_state}'
+            }
+        
+    return {
+        'statusCode': 200,
+        'body': f'Instance {instance_id} removed and {new_instance_id} added to Target Group'
+    }
 
 import sys
 import json
