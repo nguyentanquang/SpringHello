@@ -1,3 +1,58 @@
+import boto3
+import time
+
+# Khởi tạo các client cho Elastic Load Balancer và EC2
+elbv2_client = boto3.client('elbv2')
+ec2_client = boto3.client('ec2')
+
+# ID của instance EC2
+instance_id = 'i-0123456789abcdef'
+
+# ID của target group
+target_group_arn = 'arn:aws:elasticloadbalancing:us-west-2:111122223333:targetgroup/my-target-group/1234567890abcdef'
+
+# Loại bỏ instance EC2 khỏi target group
+elbv2_client.deregister_targets(
+    TargetGroupArn=target_group_arn,
+    Targets=[
+        {
+            'Id': instance_id,
+        },
+    ]
+)
+
+# Chờ đợi cho đến khi không còn request nào trên instance EC2
+while True:
+    response = elbv2_client.describe_target_health(
+        TargetGroupArn=target_group_arn,
+        Targets=[
+            {
+                'Id': instance_id,
+            },
+        ]
+    )
+    target_health = response['TargetHealthDescriptions'][0]['TargetHealth']
+    if target_health['State'] == 'draining':
+        if target_health['RequestCount'] == 0:
+            break
+        else:
+            time.sleep(10)
+    else:
+        raise Exception('Instance is not in draining state')
+
+# Khởi động lại Tomcat trên instance EC2
+# (sử dụng Lambda function hoặc kết nối đến instance EC2 để khởi động lại Tomcat)
+
+# Đăng ký lại instance EC2 vào target group
+elbv2_client.register_targets(
+    TargetGroupArn=target_group_arn,
+    Targets=[
+        {
+            'Id': instance_id,
+        },
+    ]
+)
+
 import psutil
 
 service_name = "myservice"
