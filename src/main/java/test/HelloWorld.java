@@ -1,3 +1,16 @@
+import psutil
+
+service_name = "myservice"
+
+# Tìm kiếm các process có tên chứa service_name
+processes = list(filter(lambda p: service_name in p.name(), psutil.process_iter()))
+
+# Kiểm tra xem có ít nhất một process match với service_name hay không
+if len(processes) > 0:
+    print(f"Service {service_name} đã start thành công!")
+else:
+    print(f"Service {service_name} chưa start hoặc start không thành công.")
+
 import boto3
 import time
 
