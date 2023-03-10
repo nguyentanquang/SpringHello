@@ -1,3 +1,51 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - tranfer-war
+  - deploy-war
+
+build-job:
+  stage: build
+  image: maven:3.8.3-openjdk-17
+  script:
+    - echo "Compiling the code..."
+    - mvn clean install
+    - mv ./target/*.war $CI_PROJECT_DIR/SAMPLE_TEST.war
+    - echo "Compile complete."
+  artifacts:
+    paths:
+      - SAMPLE_TEST.war
+
+tranfer-war-job:
+  stage: tranfer-war
+  image: python:latest
+  before_script:
+    - pip install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region $AWS_DEFAULT_REGION
+  script:
+    - echo "Getting the war file..."
+    - ls -l $CI_PROJECT_DIR
+    - aws s3 cp $CI_PROJECT_DIR/SAMPLE_TEST.war s3://cdk-hnb659fds-assets-800329615455-us-east-1/
+  dependencies:
+    - build-job
+
+deploy-war-job:
+  stage: deploy-war
+  image: python:latest
+  variables:
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+    SSM_COMMAND: "sudo su - && /opt/apache-tomcat-test/bin/shutdown.sh && aws s3 cp s3://cdk-hnb659fds-assets-800329615455-us-east-1/SAMPLE_TEST.war /opt/apache-tomcat-test/webapps/ && /opt/apache-tomcat-test/bin/startup.sh"
+    SSM_INSTANCE_IDS: "i-0b995cf10a186cefd"
+  before_script:
+    - pip install awscli
+  script:
+    - aws ssm send-command --document-name "AWS-RunShellScript" --parameters commands="$SSM_COMMAND" --instance-ids "$SSM_INSTANCE_IDS"
+  dependencies:
+    - tranfer-war-job
+
 import boto3
 import time
 
