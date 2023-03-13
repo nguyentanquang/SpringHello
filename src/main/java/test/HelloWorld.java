@@ -1,18 +1,13 @@
-from string import Template
+import os
+import urllib.request
+# Download Tomcat installation package
+url = 'https://downloads.apache.org/tomcat/tomcat-9/v9.0.55/bin/apache-tomcat-9.0.55.tar.gz'
+filename = url.split('/')[-1]
+urllib.request.urlretrieve(url, filename)
 
-# read the template file
-with open("template.txt", "r") as f:
-    template_string = f.read()
+# Extract Tomcat installation package
+with tarfile.open(filename, 'r:gz') as tar:
+    tar.extractall()
 
-# create a Template object
-template = Template(template_string)
-
-# define the values to substitute
-values = {"name": "John", "city": "New York"}
-
-# substitute the values in the template
-result = template.substitute(values)
-
-# create a new file and write the result to it
-with open("output.txt", "w") as f:
-    f.write(result)
+# Move extracted directory to /usr/local
+shutil.move(f'apache-tomcat-9.0.55', '/usr/local/tomcat')
