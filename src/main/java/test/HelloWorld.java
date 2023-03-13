@@ -11,3 +11,4 @@ with tarfile.open(filename, 'r:gz') as tar:
 
 # Move extracted directory to /usr/local
 shutil.move(f'apache-tomcat-9.0.55', '/usr/local/tomcat')
+https://download.oracle.com/java/17/archive/jdk-17.0.6_linux-x64_bin.rpm
