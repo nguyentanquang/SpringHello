@@ -1,3 +1,80 @@
+class WebACLStack(core.Stack):
+    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
+        super().__init__(scope, id, **kwargs)
+
+        # Định nghĩa một IPSet để lưu các giá trị User-Agent không cho phép
+        ip_set = waf.CfnIPSet(self, "UserAgentIPSet",
+            addresses=["toinf"],
+            ip_address_version="IPV4",
+            scope=waf.Scope.REGIONAL,
+            name="UserAgentIPSet",
+            description="List of user agents to block"
+        )
+
+        # Định nghĩa một rule để kiểm tra User-Agent
+        user_agent_rule = waf.CfnRule(self, "UserAgentRule",
+            name="UserAgentRule",
+            scope=waf.Scope.REGIONAL,
+            priority=1,
+            statement=waf.CfnRule.StatementProperty(
+                byte_match_statement=waf.CfnRule.ByteMatchStatementProperty(
+                    search_string="toinf",
+                    search_string_base64=None,
+                    field_to_match=waf.CfnRule.FieldToMatchProperty(
+                        single_header=waf.CfnRule.SingleHeaderProperty(
+                            name="User-Agent"
+                        )
+                    ),
+                    positional_constraint="EXACTLY",
+                    text_transformations=[
+                        waf.CfnRule.TextTransformationProperty(
+                            priority=0,
+                            type="NONE"
+                        )
+                    ]
+                )
+            )
+        )
+
+        # Định nghĩa một rule group và thêm rule vào đó
+        rule_group = waf.CfnWebACL.RuleProperty(
+            name="UserAgentRule",
+            priority=1,
+            statement=waf.CfnWebACL.StatementOneProperty(
+                byte_match_statement=waf.CfnWebACL.ByteMatchStatementProperty(
+                    search_string="toinf",
+                    search_string_base64=None,
+                    field_to_match=waf.CfnWebACL.FieldToMatchProperty(
+                        single_header=waf.CfnWebACL.SingleHeaderProperty(
+                            name="User-Agent"
+                        )
+                    ),
+                    positional_constraint="EXACTLY",
+                    text_transformations=[
+                        waf.CfnWebACL.TextTransformationProperty(
+                            priority=0,
+                            type="NONE"
+                        )
+                    ]
+                ),
+                action=waf.CfnWebACL.RuleActionProperty(
+                    block={}
+                )
+            )
+        )
+
+        # Định nghĩa một Web ACL và thêm rule group vào đó
+        web_acl = waf.CfnWebACL(self, "WebACL",
+            default_action=waf.CfnWebACL.DefaultActionProperty(
+                allow={}
+            ),
+            scope=waf.Scope.REGIONAL,
+            name="WebACL",
+            description="Web ACL to block requests with user agent 'toinf'",
+            rules=[rule_group],
+            visibility_config=waf.CfnWebACL.VisibilityConfigProperty(
+                cloud_watch_metrics_enabled=True,
+                sampled_requests
 import boto3
 
 def lambda_handler(event, context):
