@@ -109,3 +109,21 @@ def lambda_handler(event, context):
         print(f'The folder {folder_path} exists on instance {instance_id}')
     else:
         print(f'The folder {folder_path} does not exist on instance {instance_id}')
+
+import boto3
+
+# Create a boto3 Lambda client
+lambda_client = boto3.client('lambda')
+
+# Define the input payload for the Lambda function
+payload = {'key1': 'value1', 'key2': 'value2'}
+
+# Invoke the Lambda function
+response = lambda_client.invoke(
+    FunctionName='my-lambda-function',
+    InvocationType='RequestResponse',
+    Payload=json.dumps(payload)
+)
+
+# Print the response from the Lambda function
+print(response['Payload'].read().decode())
