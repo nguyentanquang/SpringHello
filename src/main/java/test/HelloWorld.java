@@ -1,3 +1,35 @@
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+public class ZipMemoryFileExample {
+  public static void main(String[] args) {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    try {
+      baos.write("xin chào".getBytes());
+      System.out.println("Tạo file thành công!");
+
+      // Nén dữ liệu từ ByteArrayOutputStream vào file zip
+      FileOutputStream fos = new FileOutputStream("myzip.zip");
+      ZipOutputStream zos = new ZipOutputStream(fos);
+      ZipEntry ze = new ZipEntry("ABC.txt");
+      zos.putNextEntry(ze);
+      zos.write(baos.toByteArray());
+      zos.closeEntry();
+      zos.close();
+      fos.close();
+      System.out.println("Nén file thành công!");
+
+    } catch (IOException e) {
+      System.out.println("Lỗi khi tạo file hoặc nén file.");
+      e.printStackTrace();
+    }
+  }
+}
+
 class WebACLStack(core.Stack):
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
