@@ -1,161 +1,92 @@
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-public class ZipMemoryFileExample {
-  public static void main(String[] args) {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-    try {
-      baos.write("xin chào".getBytes());
-      System.out.println("Tạo file thành công!");
-
-      // Nén dữ liệu từ ByteArrayOutputStream vào file zip
-      FileOutputStream fos = new FileOutputStream("myzip.zip");
-      ZipOutputStream zos = new ZipOutputStream(fos);
-      ZipEntry ze = new ZipEntry("ABC.txt");
-      zos.putNextEntry(ze);
-      zos.write(baos.toByteArray());
-      zos.closeEntry();
-      zos.close();
-      fos.close();
-      System.out.println("Nén file thành công!");
-
-    } catch (IOException e) {
-      System.out.println("Lỗi khi tạo file hoặc nén file.");
-      e.printStackTrace();
-    }
-  }
-}
-
-class WebACLStack(core.Stack):
-    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
-        super().__init__(scope, id, **kwargs)
-
-        # Định nghĩa một IPSet để lưu các giá trị User-Agent không cho phép
-        ip_set = waf.CfnIPSet(self, "UserAgentIPSet",
-            addresses=["toinf"],
-            ip_address_version="IPV4",
-            scope=waf.Scope.REGIONAL,
-            name="UserAgentIPSet",
-            description="List of user agents to block"
-        )
-
-        # Định nghĩa một rule để kiểm tra User-Agent
-        user_agent_rule = waf.CfnRule(self, "UserAgentRule",
-            name="UserAgentRule",
-            scope=waf.Scope.REGIONAL,
-            priority=1,
-            statement=waf.CfnRule.StatementProperty(
-                byte_match_statement=waf.CfnRule.ByteMatchStatementProperty(
-                    search_string="toinf",
-                    search_string_base64=None,
-                    field_to_match=waf.CfnRule.FieldToMatchProperty(
-                        single_header=waf.CfnRule.SingleHeaderProperty(
-                            name="User-Agent"
-                        )
-                    ),
-                    positional_constraint="EXACTLY",
-                    text_transformations=[
-                        waf.CfnRule.TextTransformationProperty(
-                            priority=0,
-                            type="NONE"
-                        )
-                    ]
-                )
-            )
-        )
-
-        # Định nghĩa một rule group và thêm rule vào đó
-        rule_group = waf.CfnWebACL.RuleProperty(
-            name="UserAgentRule",
-            priority=1,
-            statement=waf.CfnWebACL.StatementOneProperty(
-                byte_match_statement=waf.CfnWebACL.ByteMatchStatementProperty(
-                    search_string="toinf",
-                    search_string_base64=None,
-                    field_to_match=waf.CfnWebACL.FieldToMatchProperty(
-                        single_header=waf.CfnWebACL.SingleHeaderProperty(
-                            name="User-Agent"
-                        )
-                    ),
-                    positional_constraint="EXACTLY",
-                    text_transformations=[
-                        waf.CfnWebACL.TextTransformationProperty(
-                            priority=0,
-                            type="NONE"
-                        )
-                    ]
-                ),
-                action=waf.CfnWebACL.RuleActionProperty(
-                    block={}
-                )
-            )
-        )
-
-        # Định nghĩa một Web ACL và thêm rule group vào đó
-        web_acl = waf.CfnWebACL(self, "WebACL",
-            default_action=waf.CfnWebACL.DefaultActionProperty(
-                allow={}
-            ),
-            scope=waf.Scope.REGIONAL,
-            name="WebACL",
-            description="Web ACL to block requests with user agent 'toinf'",
-            rules=[rule_group],
-            visibility_config=waf.CfnWebACL.VisibilityConfigProperty(
-                cloud_watch_metrics_enabled=True,
-                sampled_requests
-import boto3
-
-def lambda_handler(event, context):
-    instance_id = 'i-0123456789abcdef' # replace with your instance ID
-    folder_path = '/path/to/folder' # replace with your folder path
-
-    # Create an SSM client
-    ssm = boto3.client('ssm')
-
-    # Send the command to the instance and get the command ID
-    response = ssm.send_command(
-        InstanceIds=[instance_id],
-        DocumentName='AWS-RunShellScript',
-        Parameters={
-            'commands': [
-                f'[ -d {folder_path} ] && echo True || echo False'
-            ]
-        }
-    )
-    command_id = response['Command']['CommandId']
-
-    # Get the command output
-    output = ''
-    while output == '':
-        response = ssm.get_command_invocation(
-            CommandId=command_id,
-            InstanceId=instance_id
-        )
-        output = response.get('StandardOutputContent', '').strip()
-
-    if output == 'True':
-        print(f'The folder {folder_path} exists on instance {instance_id}')
-    else:
-        print(f'The folder {folder_path} does not exist on instance {instance_id}')
-
-import boto3
-
-# Create a boto3 Lambda client
-lambda_client = boto3.client('lambda')
-
-# Define the input payload for the Lambda function
-payload = {'key1': 'value1', 'key2': 'value2'}
-
-# Invoke the Lambda function
-response = lambda_client.invoke(
-    FunctionName='my-lambda-function',
-    InvocationType='RequestResponse',
-    Payload=json.dumps(payload)
+from aws_cdk import (
+    # Duration,
+    Stack,
+    # aws_sqs as sqs,
+    aws_iam as iam,
+    aws_codebuild as codebuild,
+    aws_codecommit as codecommit,
+    aws_codepipeline as codepipeline,
+    aws_codepipeline_actions as codepipeline_actions
+    
 )
+from constructs import Construct
 
-# Print the response from the Lambda function
-print(response['Payload'].read().decode())
+class CodeBuildStack(Stack):
+
+    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+        super().__init__(scope, construct_id, **kwargs)
+
+        # Tạo CodeCommit repository
+        repository = codecommit.Repository.from_repository_name(
+            self, 'MyCodeCommitRepository', 'project-a')
+        # Định nghĩa vai trò
+        # build_role = iam.Role(
+        #     self, 'MyBuildRole',
+        #     assumed_by=iam.ServicePrincipal('codebuild.amazonaws.com'),
+        #     description='Role for CodeBuild',
+        #     role_name='MyBuildRole'
+        # )
+
+        # # Gán quyền truy cập cho vai trò
+        # build_role.add_managed_policy(
+        #     iam.ManagedPolicy.from_aws_managed_policy_name(
+        #         'AmazonS3ReadOnlyAccess'
+        #     )
+        # )
+        # Tạo CodeBuild project
+        build_project = codebuild.Project(
+            self,
+            "MyProject1",
+            source=codebuild.Source.code_commit(
+                repository=repository,
+                branch_or_ref="master",
+            ),
+            build_spec=codebuild.BuildSpec.from_object({
+                'version': '0.2',
+                'phases': {
+                    'build': {
+                        'commands': [
+                            'mvn clean install',
+                            'aws s3 cp target/*.war s3://cdk-hnb659fds-assets-800329615455-ap-southeast-1/build/project-a.war'
+                        ]
+                    }
+                }
+            })
+        )
+
+        # Create pipeline
+        pipeline = codepipeline.Pipeline(
+            self, "Pipeline",
+            pipeline_name="MyPipeline"
+        )
+
+        # Add source stage
+        source_output = codepipeline.Artifact()
+        source_stage = pipeline.add_stage(
+            stage_name="Source",
+            actions=[
+                codepipeline_actions.CodeCommitSourceAction(
+                    action_name="CodeCommit_Source",
+                    repository=codecommit.Repository.from_repository_name(
+                        self, "CodeCommitRepo",
+                        repository_name="project-a"
+                    ),
+                    branch="master",
+                    output=source_output
+                )
+            ]
+        )
+
+        # Add build stage
+        build_output = codepipeline.Artifact()
+        build_stage = pipeline.add_stage(
+            stage_name="Build",
+            actions=[
+                codepipeline_actions.CodeBuildAction(
+                    action_name="Build",
+                    project=build_project,
+                    input=source_output,
+                    outputs=[build_output]
+                )
+            ]
+        )
