@@ -1,3 +1,49 @@
+package com.example.springbootdemo;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+public class AppleAuthenticationService {
+
+    @Value("${spring.security.oauth2.client.registration.apple.client-id}")
+    private String clientId;
+
+    @Value("${spring.security.oauth2.client.registration.apple.client-secret}")
+    private String clientSecret;
+
+    public Map<String, String> authenticateWithApple(String authorizationCode) {
+        String url = "https://appleid.apple.com/auth/token";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("grant_type", "authorization_code");
+        requestBody.put("code", authorizationCode);
+        requestBody.put("client_id", clientId);
+        requestBody.put("client_secret", clientSecret);
+
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Map> response = restTemplate.postForEntity(url, requestEntity, Map.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody();
+        }
+
+        return null;
+    }
+}
+
+
+
 from aws_cdk import (
     # Duration,
     Stack,
