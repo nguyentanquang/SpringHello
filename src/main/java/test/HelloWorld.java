@@ -1,5 +1,60 @@
 package com.example.springbootdemo;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Map;
+
+@Controller
+public class LoginController {
+
+    @Autowired
+    private AppleAuthenticationService appleAuthenticationService;
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/login/apple")
+    public String loginWithApple(@RequestParam("code") String authorizationCode, Model model) {
+        Map<String, String> appleResponse = appleAuthenticationService.authenticateWithApple(authorizationCode);
+
+        if (appleResponse != null) {
+            String accessToken = appleResponse.get("access_token");
+            String idToken = appleResponse.get("id_token");
+
+            // TODO: Xử lý thông tin trong idToken (thông tin người dùng đã được xác thực)
+            // Ví dụ: Giải mã idToken để lấy thông tin tên, email, v.v...
+
+            model.addAttribute("name", "John Doe"); // Thay bằng thông tin thật từ idToken
+            model.addAttribute("email", "john.doe@example.com"); // Thay bằng thông tin thật từ idToken
+
+            return "home";
+        }
+
+        // Xử lý lỗi đăng nhập
+        return "login";
+    }
+
+    @GetMapping("/")
+    public String home() {
+        return "home";
+    }
+}
+
+
+
+
+p
+ack
+age
+
+    com.example.springbootdemo;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
