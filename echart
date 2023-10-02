@@ -1,0 +1,163 @@
+var data = [];
+var startDateStr = '01/1/2023 00:00:00';
+var startDate = new Date(startDateStr);
+var milliseconds = startDate.getTime();
+var startTime = milliseconds;
+
+var types = [
+  { name: 'internal', color: '#7b9ce1' },
+  { name: 'external', color: '#bd6d6c' }
+];
+
+var projects = [
+  {
+    name: 'Project A',
+    type: 'internal',
+    workingDuration: [
+      { from: '03/10/2023 00:00:00', to: '12/18/2023 00:00:00', duration: 8.0 }
+    ]
+  },
+  {
+    name: 'Project B',
+    type: 'internal',
+    workingDuration: [
+      { from: '02/05/2023 00:00:00', to: '02/21/2023 00:00:00', duration: 5.0 },
+      { from: '05/10/2023 00:00:00', to: '07/1/2023 00:00:00', duration: 2.0 }
+    ]
+  },
+  {
+    name: 'Project C',
+    type: 'external',
+    workingDuration: [
+      { from: '02/05/2023 00:00:00', to: '02/21/2023 00:00:00', duration: 8.0 },
+      { from: '03/10/2023 00:00:00', to: '04/18/2023 00:00:00', duration: 1.0 },
+      { from: '06/10/2023 00:00:00', to: '07/18/2023 00:00:00', duration: 6.0 }
+    ]
+  }
+];
+var categories = projects.map((a) => a.name);
+// Generate mock data
+projects.forEach(function (project, indProject) {
+  console.log(project.name);
+  var baseTime = null;
+  project.workingDuration.forEach(function (working, indDuration) {
+    var dateFrom = new Date(working.from); // some mock date
+    var millisecondsFrom = dateFrom.getTime();
+    var dateTo = new Date(working.to); // some mock date
+    var millisecondsTo = dateTo.getTime();
+    var baseTime = millisecondsFrom;
+    var typeItem = types.find((x) => x.name === project.type);
+    var duration = millisecondsTo - millisecondsFrom;
+    data.push({
+      name: project.name,
+      value: [indProject, baseTime, (baseTime += duration), new Date(baseTime)],
+      itemStyle: {
+        normal: {
+          color: typeItem.color
+        }
+      },
+      duration: working.duration
+    });
+  });
+});
+function renderItem(params, api) {
+  var categoryIndex = api.value(0);
+  var start = api.coord([api.value(1), categoryIndex]);
+  var end = api.coord([api.value(2), categoryIndex]);
+  var height = api.size([0, 1])[1] * 0.6;
+  var rectShape = echarts.graphic.clipRectByRect(
+    {
+      x: start[0],
+      y: start[1] - height / 2,
+      width: end[0] - start[0],
+      height: height
+    },
+    {
+      x: params.coordSys.x,
+      y: params.coordSys.y,
+      width: params.coordSys.width,
+      height: params.coordSys.height
+    }
+  );
+  return (
+    rectShape && {
+      type: 'rect',
+      transition: ['shape'],
+      shape: rectShape,
+      style: api.style()
+    }
+  );
+}
+option = {
+  tooltip: {
+    formatter: function (params) {
+      // Sửa lại định dạng tooltip để hiển thị ngày/tháng
+      var startDate = new Date(params.value[1]);
+      var endDate = new Date(params.value[2]);
+      return (
+        params.marker +
+        params.name +
+        ': ' +
+        startDate.toLocaleDateString() +
+        ' - ' +
+        endDate.toLocaleDateString() + ' (' + params.data.duration + 'h)'
+      );
+    }
+  },
+  title: {
+    text: 'Profile',
+    left: 'center'
+  },
+  dataZoom: [
+    {
+      type: 'slider',
+      filterMode: 'weakFilter',
+      showDataShadow: false,
+      top: 400,
+      labelFormatter: ''
+    },
+    {
+      type: 'inside',
+      filterMode: 'weakFilter'
+    }
+  ],
+  grid: {
+    height: 270
+  },
+  xAxis: {
+    min: startTime,
+    scale: true,
+    axisLabel: {
+      formatter: function (val) {
+        return echarts.format.formatTime('yyyy-MM-dd', new Date(val));
+      },
+      rotate: 30,
+    },
+    
+  },
+  yAxis: {
+    data: categories
+  },
+  series: [
+    {
+      type: 'custom',
+      renderItem: renderItem,
+      itemStyle: {
+        opacity: 0.8
+      },
+      encode: {
+        x: [1, 2],
+        y: 0
+      },
+      label: {
+        show: true,
+        position: 'inside',
+        formatter: function (params) {
+          console.log(params)
+        return params.data.duration + 'h';
+      }
+      },
+      data: data
+    }
+  ]
+};
