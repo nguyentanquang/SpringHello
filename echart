@@ -20,3 +20,47 @@ For Each objItem In colItems
 	
 	
 Next
+
+
+' Tìm đối tượng InternetExplorer.Application từ Process ID
+Function GetIEFromProcessID(processID)
+    Set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
+    Set colItems = objWMIService.ExecQuery("Select * From Win32_Process Where ProcessId = " & processID)
+
+    For Each objItem In colItems
+        Set objIE = GetObject("winmgmts:\\.\root\cimv2:Win32_Process.Handle='" & objItem.Handle & "'").ExecMethod_("GetOwner").User
+        Set GetIEFromProcessID = objIE
+        Exit Function
+    Next
+    Set GetIEFromProcessID = Nothing
+End Function
+
+' Tạo đối tượng Shell
+Set objShell = WScript.CreateObject("WScript.Shell")
+
+' Mở Internet Explorer và lấy Process ID
+Set objIE = objShell.Exec("iexplore.exe http://www.example.com")
+WScript.Sleep 2000 ' Chờ một khoảng thời gian để đảm bảo IE đã khởi động hoàn toàn
+
+' Lấy Process ID của IE
+processID = objIE.ProcessID
+
+' Lấy đối tượng InternetExplorer.Application từ Process ID
+Set objIE = GetIEFromProcessID(processID)
+
+' Kiểm tra nếu đã tìm thấy đối tượng IE
+If Not objIE Is Nothing Then
+    ' Thực hiện các thao tác trên trang đã mở
+    objIE.Navigate "http://www.google.com"
+
+    ' Đợi trang web tải xong
+    Do While objIE.Busy
+        WScript.Sleep 100
+    Loop
+
+    ' Thực hiện các thao tác khác tại đây
+
+    ' Đóng trình duyệt IE khi hoàn thành (nếu cần)
+    objIE.Quit
+End If
+
