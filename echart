@@ -64,3 +64,61 @@ If Not objIE Is Nothing Then
     objIE.Quit
 End If
 
+
+
+Option Explicit
+
+' Hàm để lấy đối tượng IE từ PID
+Function GetIEFromPID(pid)
+    Dim objWMIService, colItems, objItem
+
+    ' Kết nối tới WMI
+    Set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
+
+    ' Truy vấn WMI để lấy thông tin về quy trình có PID tương ứng
+    Set colItems = objWMIService.ExecQuery("Select * From Win32_Process Where ProcessId = " & pid)
+
+    ' Lặp qua kết quả truy vấn
+    For Each objItem In colItems
+        ' Kiểm tra xem quy trình có là iexplore.exe không
+        If InStr(1, objItem.ExecutablePath, "iexplore.exe", vbTextCompare) > 0 Then
+            ' Tạo đối tượng Internet Explorer từ PID
+            On Error Resume Next
+            Set GetIEFromPID = GetObject("winmgmts:\\.\root\cimv2:Win32_Process.Handle='" & objItem.Handle & "'").ExecMethod_("GetOwner").User
+            On Error GoTo 0
+
+            ' Kiểm tra xem đối tượng IE có khả dụng không
+            If Not GetIEFromPID Is Nothing Then
+                Exit Function
+            End If
+        End If
+    Next
+
+    ' Nếu không tìm thấy, trả về Nothing
+    Set GetIEFromPID = Nothing
+End Function
+
+' Ví dụ: Thay thế pid bằng giá trị Process ID (PID) của trình duyệt IE cụ thể bạn quan tâm
+Dim pid
+pid = 1234 ' Ví dụ, PID của trình duyệt IE cần quan sát
+
+' Lấy đối tượng InternetExplorer.Application từ PID
+Dim objIE
+Set objIE = GetIEFromPID(pid)
+
+' Kiểm tra nếu đã tìm thấy đối tượng IE
+If Not objIE Is Nothing Then
+    ' Thực hiện các thao tác trên trang đã mở
+    objIE.Navigate "http://www.google.com"
+
+    ' Đợi trang web tải xong
+    Do While objIE.Busy
+        WScript.Sleep 100
+    Loop
+
+    ' Thực hiện các thao tác khác tại đây
+
+    ' Đóng trình duyệt IE khi hoàn thành (nếu cần)
+    objIE.Quit
+End If
+
