@@ -1,1 +1,22 @@
-Googleスプレッドシートで開くと、図形が崩れる可能性があるため、お手数ですが、直接Excelで開いてください。
+' Tạo đối tượng Shell
+Set objShell = WScript.CreateObject("WScript.Shell")
+
+' Mở Internet Explorer và lấy Process ID
+Set objIE = objShell.Exec("C:\Program Files (x86)\Internet Explorer\iexplore.exe http://www.example.com")
+WScript.Sleep 2000 ' Chờ một khoảng thời gian để đảm bảo IE đã khởi động hoàn toàn
+
+' Lấy Process ID của IE
+processID = objIE.ProcessID
+MsgBox processID
+' Sử dụng WMI để tìm cửa sổ IE dựa trên Process ID
+Set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
+Set colItems = objWMIService.ExecQuery("Select * From Win32_Process Where ProcessId = " & processID)
+
+For Each objItem In colItems
+    ' Tìm thấy IE đã mở với Process ID cần tương tác
+
+    ' Mở trang web Google.com
+    objItem.Create "http://www.google.com", Null, Null
+	
+	
+Next
