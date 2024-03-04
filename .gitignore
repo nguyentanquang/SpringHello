@@ -1,9 +1,20 @@
-1. 承知しました。Q&A No.5を回答しましたので、ご確認お願い致します。
+Tại sao Selenium chạy quá chậm?
 
-2. 承知しました。次回のテストにこの観点を確認致します。
+Selenium có thể chạy chậm vì một số lý do. Nguyên nhân thường gặp là:
 
-3. 承知しました。Q&A No.28の確認ができ次第、テストケースNo.26~28を実施致します。
+Chiến lược định vị phần tử không hiệu quả.
+Quá nhiều hướng dẫn lựa chọn.
+Sử dụng chờ đợi rõ ràng.
+Máy chủ web mục tiêu bận hoặc chậm.
+Có quá nhiều tài nguyên để hiển thị trên trang.
+Làm thế nào để Selenium chạy nhanh hơn?
 
-4. 新にてinit Edge Driverの処理があるため、旧のジョブより新のジョブの処理時間の方が長くなっています（旧には該当の処理がありません）
-このinitの処理は最初のレコードのみに1回しか稼働しないため、仮に100レコードがあっても旧と大して違いません。
-この問題は総合テスト時の問題対象に入れて擦り合わせを行えばいかがでしょうか。
+Để Selenium chạy nhanh hơn, hãy xem xét các mẹo sau:
+
+Tối ưu hóa tập lệnh bằng cách giảm thiểu các tương tác không cần thiết.
+Sử dụng công cụ định vị hiệu quả.
+Chỉ sử dụng chờ đợi ngầm.
+Thực hiện các yêu cầu song song trên nhiều phiên bản trình duyệt.
+Sử dụng Selenium Grid để phân phối khối lượng công việc từ xa.
+Tăng tài nguyên phần cứng của máy.
+Luôn cập nhật Selenium và trình điều khiển trình duyệt.
