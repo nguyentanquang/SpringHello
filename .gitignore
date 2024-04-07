@@ -1,9 +1,15 @@
-accls3ジョブに関して、DEV環境で問題を再現出来ました。
-エビデンス:
-ログの結果を見ると、VBSと違って、Pythonが異常終了した原因は以下のように推測しております。
-1. Python：実行中にNGが発生したため（ページの読み込み時間が2分超過）
-→ジョブ実行中にNGが3回以上発生した場合、異常終了します。
-
-2. VBS: ジョブ実行中にNGが発生しないため、正常終了します。
-
-→pythonでNGが発生した原因は引き続き調査 しております。ベトナム側で調査中なのため、球持ちはベトナム側とさせていただきます。
+[07/04/2024 22:24:21] Đăng Thức: この内容を確認するには、ジョブを再度実行する必要があります。時間がかかりますので、8/4日の12時(jst)までにまた連絡させていただきます。ご不便をおかけして申し訳ございません
+[07/04/2024 22:38:46] Nguyễn Tấn Quang: Liên quan tới task XXXX 
+job facs: đã hoàn thành trả lời comment và gửi lại phía Nhật review.
+job accls3: Không hoàn thành trả lời comment vào hôm ngày hôm nay được.
+Lý do: Việc chạy run job accls3 để confirm performance mất nhiều thời gian hơn dự kiến.
+Đối sách: Chúng tôi đã thực hiện run job dự kiến hoàn thành trả lời comment và gửi lại cho các bạn vào lúc 12:00 JST ngày 4/8
+Chúng tôi xin lỗi vì sự bất tiện này.
+[07/04/2024 22:38:50] Nguyễn Tấn Quang: cái cuối cùng a nhé
+[07/04/2024 22:47:22] Đăng Thức: タスク XXXX について
+ジョブ facs: コメントへの返信を完了し、レビューのために日本に返送されました。 
+ジョブ accls3: 今日はコメントへの返信を完了できませんでした。 
+理由: パフォーマンスを確認するためのジョブ accls3 の実行に予想より時間がかかりました。 
+対応: ジョブを実行して、 8 /4 日 12:00 までに返信される予定です。 ご不便をおかけして申し訳ございません。
+[07/04/2024 22:47:53] Đăng Thức: Ri hi
+[07/04/2024 22:48:45] Nguyễn Tấn Quang: Dạ, thanks a nhé
