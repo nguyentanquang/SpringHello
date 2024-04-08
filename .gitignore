@@ -1,15 +1,10 @@
-[07/04/2024 22:24:21] Đăng Thức: この内容を確認するには、ジョブを再度実行する必要があります。時間がかかりますので、8/4日の12時(jst)までにまた連絡させていただきます。ご不便をおかけして申し訳ございません
-[07/04/2024 22:38:46] Nguyễn Tấn Quang: Liên quan tới task XXXX 
-job facs: đã hoàn thành trả lời comment và gửi lại phía Nhật review.
-job accls3: Không hoàn thành trả lời comment vào hôm ngày hôm nay được.
-Lý do: Việc chạy run job accls3 để confirm performance mất nhiều thời gian hơn dự kiến.
-Đối sách: Chúng tôi đã thực hiện run job dự kiến hoàn thành trả lời comment và gửi lại cho các bạn vào lúc 12:00 JST ngày 4/8
-Chúng tôi xin lỗi vì sự bất tiện này.
-[07/04/2024 22:38:50] Nguyễn Tấn Quang: cái cuối cùng a nhé
-[07/04/2024 22:47:22] Đăng Thức: タスク XXXX について
-ジョブ facs: コメントへの返信を完了し、レビューのために日本に返送されました。 
-ジョブ accls3: 今日はコメントへの返信を完了できませんでした。 
-理由: パフォーマンスを確認するためのジョブ accls3 の実行に予想より時間がかかりました。 
-対応: ジョブを実行して、 8 /4 日 12:00 までに返信される予定です。 ご不便をおかけして申し訳ございません。
-[07/04/2024 22:47:53] Đăng Thức: Ri hi
-[07/04/2024 22:48:45] Nguyễn Tấn Quang: Dạ, thanks a nhé
+Tôi đã thông báo cho ông suzuki và add task vào WBS (Line X~Y). Vui lòng confirm
+
+Về việc add bổ sung task vào WBS
+1. Add bổ sung đối tượng test của Issue No.12
+Theo như nội dung trao đổi tại file 「」No.8, thì chúng tôi đã add bổ sung đối tượng XXX làm đối tượng test của Issue No.12 vào WBS
+(Line X~Y)
+2. Add bổ sung plan đối ứng của Issue No.18 (Issue được liên lạc ngày 4/8)
+(Line X~Y)
+Nhờ các bạn confirm.
+* Bởi vì tránh thay đổi số line của các task đã được tạo trước đó của WBS nên tôi đã add vào cuối cùng của file22:49/-strong/-heart:>:o:-((:-h
