@@ -1,10 +1,6 @@
-Tôi đã thông báo cho ông suzuki và add task vào WBS (Line X~Y). Vui lòng confirm
+レビュー依頼No.X~Y
 
-Về việc add bổ sung task vào WBS
-1. Add bổ sung đối tượng test của Issue No.12
-Theo như nội dung trao đổi tại file 「」No.8, thì chúng tôi đã add bổ sung đối tượng XXX làm đối tượng test của Issue No.12 vào WBS
-(Line X~Y)
-2. Add bổ sung plan đối ứng của Issue No.18 (Issue được liên lạc ngày 4/8)
-(Line X~Y)
-Nhờ các bạn confirm.
-* Bởi vì tránh thay đổi số line của các task đã được tạo trước đó của WBS nên tôi đã add vào cuối cùng của file22:49/-strong/-heart:>:o:-((:-h
+恐れ入りますが、XX/YYの打ち合わせで合意した通り、6つのパターン(YYYに関連)のテスト結果を日本側に送付しますが、テスト実施のに時間が多くかかった為、テストデータが使用できなくなりました。
+したがって、6パターンの中で5パターンしかテスト出来なかったです。
+お忙しい中恐縮ですが、再度これらのパターンのテストデータを作成していただけますでしょうか。
+テストデータの作成が完了したら、約1時間以内でテストを完了させて、日本側にテスト結果を送るようにします。
