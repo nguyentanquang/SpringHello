@@ -10,3 +10,10 @@ https://document.intra-mart.jp/library/iap/public/tutorial/low_code_tutorial_gui
 
 Template:
 https://document.intra-mart.jp/library/accel_studio/public/accel_studio_template_catalog/texts/templates/index.html
+Loại template	Chức năng chính
+Base Templates	Tạo entity mới, cấu trúc app từ database hoặc Excel
+Sample Applications	Ứng dụng mẫu cho nhiều nghiệp vụ (chấm công, tồn kho, phê duyệt,...)
+Option Templates	Bổ sung chức năng đặc thù (upload file, import/export, lưu SP, Gantt chart)
+
+Trang tổng hợp:
+https://dev-portal.intra-mart.jp/lowcode/accel-studio/
