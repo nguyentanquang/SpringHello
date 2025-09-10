@@ -17,3 +17,25 @@ Option Templates	Bổ sung chức năng đặc thù (upload file, import/export,
 
 Trang tổng hợp:
 https://dev-portal.intra-mart.jp/lowcode/accel-studio/
+
+Azure Blob Storage: Lưu dữ liệu gốc (Takeout export).
+https://learn.microsoft.com/en-us/azure/storage/blobs/blob-storage-estimate-costs?utm_source=chatgpt.com
+Azure Blob Storage (Lưu trữ dữ liệu gốc)
+Bạn có thể ước tính chi phí lưu trữ theo GB/tháng với bảng như sau:
+Hot: ~$0.0208/GB/tháng
+Cool: ~$0.0115/GB/tháng
+Archive: ~$0.002/GB/tháng
+
+Azure Function / Data Factory: Pipeline để ETL (extract → transform → load).
+https://azure.microsoft.com/en-us/pricing/details/functions/?utm_source=chatgpt.com
+Azure Functions (Compute – ETL theo request)
+Mức giá tiêu chuẩn theo Consumption plan:
+$0.000016 per GB-second
+$0.20/million executions
+Kèm theo mức miễn phí: 400,000 GB-s và 1 triệu executions/tháng
+
+Azure OpenAI: Sinh embeddings + tóm tắt nội dung.
+
+Azure Cognitive Search (Vector Index): Lưu và tìm kiếm vector.
+
+API layer: Cho người dùng query và nhận kết quả.
